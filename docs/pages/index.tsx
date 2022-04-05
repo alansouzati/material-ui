@@ -1,65 +1,74 @@
 import * as React from 'react';
-import Head from 'docs/src/modules/components/Head';
-import NoSsr from '@mui/material/NoSsr';
-import Divider from '@mui/material/Divider';
-import AppHeader from 'docs/src/layouts/AppHeader';
-import Hero from 'docs/src/components/home/Hero';
-import References, { CORE_CUSTOMERS } from 'docs/src/components/home/References';
-import ProductSuite from 'docs/src/components/home/ProductSuite';
-import ValueProposition from 'docs/src/components/home/ValueProposition';
-import DesignSystemComponents from 'docs/src/components/home/DesignSystemComponents';
-import Testimonials from 'docs/src/components/home/Testimonials';
-import Sponsors from 'docs/src/components/home/Sponsors';
-import HeroEnd from 'docs/src/components/home/HeroEnd';
-import AppFooter from 'docs/src/layouts/AppFooter';
-import BrandingProvider from 'docs/src/BrandingProvider';
-import NewsletterToast from 'docs/src/components/home/NewsletterToast';
-import AppHeaderBanner from 'docs/src/components/banner/AppHeaderBanner';
+import {
+  BoxTypeMap,
+  createBox,
+  createBreakpoints,
+  StandardCSSProperties,
+} from "@mui/system";
+import {ThemeProvider, createTheme} from "@mui/material";
+import { unstable_ClassNameGenerator as ClassNameGenerator } from "@mui/base/className";
+import { OverridableComponent } from "@mui/types";
+import {CSSProperties} from "@mui/styles";
+import {bungalowStyleFunctionSx} from "./bungalowStyleFunctionSx";
+
+type SizingType = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+
+declare module '@mui/material/styles' {
+  interface Theme {
+    sizing: Partial<Record<SizingType, (prop: string) => CSSProperties | CSSProperties | string>>;
+  }
+  // allow configuration using `createTheme`
+  interface ThemeOptions {
+    sizing?: Partial<Record<SizingType, (prop: string) => CSSProperties | CSSProperties | string>>;
+  }
+}
+
+const breakpoints = createBreakpoints({
+  values: {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1560,
+  }
+});
+
+const bungalowTheme = createTheme({
+  sizing: {
+    small: (sizingProp: string) => ({
+      [sizingProp]: '44px',
+      [breakpoints.down('sm')]: {
+        [sizingProp]: '33px',
+      },
+    }),
+    medium: (sizingProp: string) => ({
+      [sizingProp]: '88px',
+      [breakpoints.down('sm')]: {
+        [sizingProp]: '66px',
+      },
+    }),
+  }
+});
+
+interface CustomBoxProps {
+  height?: SizingType | StandardCSSProperties['height'];
+  width?: SizingType | StandardCSSProperties['width'];
+  sx?: {
+    height?: SizingType | StandardCSSProperties['height'];
+    width?: SizingType | StandardCSSProperties['width'];
+  };
+}
+const BungalowBox = createBox({
+  defaultTheme: bungalowTheme,
+  defaultClassName: 'BungalowBox-root',
+  generateClassName: ClassNameGenerator.generate,
+  styleFunctionSx: bungalowStyleFunctionSx,
+}) as OverridableComponent<BoxTypeMap<CustomBoxProps>>;
 
 export default function Home() {
   return (
-    <BrandingProvider>
-      <Head
-        title="MUI: The React component library you always wanted"
-        description="MUI provides a simple, customizable, and accessible library of React components. Follow your own design system, or start with Material Design. You will develop React applications faster."
-      />
-      <NoSsr>
-        <NewsletterToast />
-      </NoSsr>
-      <AppHeaderBanner />
-      <AppHeader />
-      <main>
-        <Hero />
-        <References companies={CORE_CUSTOMERS} />
-        <ProductSuite />
-        <ValueProposition />
-        <DesignSystemComponents />
-        <Testimonials />
-        <Sponsors />
-        <HeroEnd />
-        <Divider />
-      </main>
-      <AppFooter />
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html: `
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "MUI",
-  "url": "https://mui.com/",
-  "logo": "https://mui.com/static/logo.png",
-  "sameAs": [
-    "https://twitter.com/MUI_hq",
-    "https://github.com/mui/",
-    "https://opencollective.com/mui"
-  ]
-}
-          `,
-        }}
-      />
-    </BrandingProvider>
+    <ThemeProvider theme={bungalowTheme}>
+      <BungalowBox border={1} width="medium" height='small'>I'm a declarative box</BungalowBox>
+    </ThemeProvider>
   );
 }
