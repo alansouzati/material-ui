@@ -21,13 +21,13 @@ import {
   removeUnusedBreakpoints,
   values as breakpointsValues
 } from "@mui/system/breakpoints";
-import {responsiveStyle} from "./responsiveStyle";
+import {declarativeStyle} from "./declarativeStyle";
 
 function transform(value) {
   return value <= 1 && value !== 0 ? `${value * 100}%` : value;
 }
 
-export const width = responsiveStyle({
+export const width = declarativeStyle({
   prop: 'width',
   themeKey: 'sizing',
   transform,
@@ -53,7 +53,7 @@ export const minWidth = style({
   transform,
 });
 
-export const height = responsiveStyle({
+export const height = declarativeStyle({
   prop: 'height',
   themeKey: 'sizing',
   transform,
@@ -133,18 +133,18 @@ const borders = compose(
 
 const color = style({
   prop: 'color',
-  themeKey: 'vars.palette',
+  themeKey: 'palette',
 });
 
-const bgcolor = style({
+const bgcolor = declarativeStyle({
   prop: 'bgcolor',
   cssProperty: 'backgroundColor',
-  themeKey: 'vars.palette',
+  themeKey: 'palette',
 });
 
-const backgroundColor = style({
+const backgroundColor = declarativeStyle({
   prop: 'backgroundColor',
-  themeKey: 'vars.palette',
+  themeKey: 'palette',
 });
 
 const palette = compose(color, bgcolor, backgroundColor);

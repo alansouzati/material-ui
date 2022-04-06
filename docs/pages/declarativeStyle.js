@@ -37,7 +37,10 @@ function getValue(themeMapping, transform, propValueFinal, userValue = propValue
   return value;
 }
 
-export const responsiveStyle = (options) => {
+// TODO: add more colors here...
+const colorPropNames = ['bgcolor', 'backgroundColor', 'color'];
+
+export const declarativeStyle = (options) => {
   const { prop, cssProperty = options.prop, themeKey, transform } = options;
 
   const fn = (props) => {
@@ -45,7 +48,11 @@ export const responsiveStyle = (options) => {
       return null;
     }
 
-    const propValue = props[prop];
+    const propValue = colorPropNames.includes(prop) && !props[prop].includes('.') ? (
+      `${props[prop]}.${props.theme.palette.mode}`
+    ) : (
+      props[prop]
+    );
     const theme = props.theme;
     const themeMapping = getPath(theme, themeKey) || {};
     const styleFromPropValue = (propValueFinal) => {
